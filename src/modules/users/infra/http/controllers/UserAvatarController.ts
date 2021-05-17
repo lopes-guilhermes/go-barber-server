@@ -5,7 +5,7 @@ import UpdateUserAvatarService from '@modules/users/services/UpdateUserAvatarSer
 
 export default class UserAvatarController {
   public async update(request: Request, response: Response): Promise<Response>{
-    const updateUserAvatar = new UpdateUserAvatarService(container.resolve('UsersRepository'));
+    const updateUserAvatar = new UpdateUserAvatarService(container.resolve('UsersRepository'), container.resolve('StorageProvider'));
 
     const user = await updateUserAvatar.execute({
       user_id: request.user.id,
