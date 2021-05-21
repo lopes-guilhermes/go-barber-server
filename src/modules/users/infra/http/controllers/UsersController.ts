@@ -7,7 +7,7 @@ export default class UsersController {
   public async create(request: Request, response: Response): Promise<Response>{
     const { name, email, password } = request.body;
   
-    const createUser = new CreateUserSerivce(container.resolve('UsersRepository'), container.resolve('HashProvider'));
+    const createUser = container.resolve(CreateUserSerivce);
 
     const user = await createUser.execute({
       name,

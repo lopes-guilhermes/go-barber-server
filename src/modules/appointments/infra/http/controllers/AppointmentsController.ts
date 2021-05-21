@@ -10,7 +10,7 @@ export default class AppointmentsController {
   
     const parsedDate = parseISO(date);
     
-    const createAppointment = new CreateAppointmentService(container.resolve('AppointmentsRepository'));
+    const createAppointment = container.resolve(CreateAppointmentService);
     
     const appointment = await createAppointment.execute({
       provider_id, 
