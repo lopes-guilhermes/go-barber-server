@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for appointments/services/ListProviderMonthAvailabilityService.ts</title>
+    <title>Code coverage report for appointments/services/ListProviderDayAvailabilityService.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,7 +19,7 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">appointments/services</a> ListProviderMonthAvailabilityService.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">appointments/services</a> ListProviderDayAvailabilityService.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
@@ -147,14 +147,14 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">341x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -162,58 +162,58 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">import { inject, injectable } from 'tsyringe';
-import { getDate, getDaysInMonth } from 'date-fns';
+import { getHours, getDaysInMonth } from 'date-fns';
 &nbsp;
 import IAppointmentsRepository from '@modules/appointments/repositories/IAppointmentsRepository';
 &nbsp;
 interface IRequest {
   provider_id: string;
-  month: number;
   year: number;
+  month: number;
+  day: number;
 }
 &nbsp;
 type IResponse = Array&lt;{
-  day: number;
+  hour: number;
   available: boolean;
 }&gt;;
 &nbsp;
 @injectable()
-class ListProviderMonthAvailabilityService {
+class ListProviderDayAvailabilityService {
   constructor(
     @inject('AppointmentsRepository')
     private appointmentsRepository: IAppointmentsRepository
   ) { }
 &nbsp;
-  public async execute({ provider_id, month, year }: IRequest): Promise&lt;IResponse&gt; {
-    const appointments = await this.appointmentsRepository.findAllInMonthFromProvider({
-      provider_id, 
-      month, 
-      year
+  public async execute({ provider_id, year, month, day }: IRequest): Promise&lt;IResponse&gt; {
+    const appointments = await this.appointmentsRepository.findAllInDayFromProvider({
+      provider_id,
+      year,
+      day,
+      month
     });
-    
-    const numberOfDaysinMonth = getDaysInMonth(new Date(year, month - 1));
 &nbsp;
-    const eachDayArray = Array.from(
-      { length: numberOfDaysinMonth },
-      ( value, index ) =&gt; index + 1,
+    const hourStart = 8;
+&nbsp;
+    const eachHourArray = Array.from(
+      { length: 10 },
+      ( value, index ) =&gt; index + hourStart
     );
 &nbsp;
-    const availability = eachDayArray.map(day =&gt; {
-      const appointmentsInDay = appointments.filter(appointment =&gt; {
-        return getDate(appointment.date) == day;
-      });
-      
+    const availability = eachHourArray.map(hour =&gt; {
+      const hasAppointmentInHour = appointments.find(appointment =&gt; getHours(appointment.date) == hour);
+&nbsp;
       return {
-        day,
-        available: appointmentsInDay.length &lt; 10,
+        hour,
+        available: !hasAppointmentInHour
       }
     });
-    
+&nbsp;
     return availability;
   }
 }
 &nbsp;
-export default ListProviderMonthAvailabilityService;</pre></td></tr></table></pre>
+export default ListProviderDayAvailabilityService;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
