@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@types/mongodb": "^3.6.16",
+    "aws-sdk": "^2.919.0",
     "bcryptjs": "^2.4.3",
     "celebrate": "^14.0.0",
     "class-transformer": "^0.4.0",
